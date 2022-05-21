@@ -1,0 +1,71 @@
+PANDAS
+
+Manipulación y análisis de datos. El nombre viene de “Panel data”.
+• Velocidad
+• Poco código
+• Múltiples formatos de archivos
+• Alineación inteligente
+
+Pandas Series
+
+Es muy parecido a un array de una dimensión (o vector) de NumPy.
+• Arreglo unidimensional indexado
+• Búsqueda por índice
+• Slicing
+• Operaciones aritméticas
+• Distintos tipos de datos
+
+Pandas DataFrame
+
+Muy parecido a las estructuras matriciales trabajadas con NumPy.
+• Estructura principal
+• Arreglo de dos dimensiones
+• Búsqueda por índice (columnas o filas)
+• Slicing
+• Operaciones aritméticas
+• Distintos tipos de datos
+• Tamaño variable
+
+---------------------------------------------------------------------
+
+Leer archivos CSV y JSON con Pandas
+Cargar Archivos
+Podemos cargar archivos a través de url, json, html, etc
+
+CSV
+Podemos cargar los archivos csv de manera automática, o dándole atributos especiales cuando el archivo no este delimitado por comas, sino por algún otro carácter
+
+csv_per_default = pd.read_csv('./bestsellers-with-categories.csv')
+Cambiar inicio nombres de columnas
+header_0 = pd.read_csv('./bestsellers-with-categories.csv', sep=",", header=0,)
+header_100 = pd.read_csv('./bestsellers-with-categories.csv', sep=",", header=100,)
+header_none = pd.read_csv('./bestsellers-with-categories.csv', sep=",", header=None)
+Cambiar nombres de columnas
+df_books = pd.read_csv(
+	'./bestsellers-with-categories.csv',
+	sep=",",
+	header=0
+)
+df_books.columns
+df_books = pd.read_csv(
+	'./bestsellers-with-categories.csv',
+	sep=",",
+	header=0,
+	names=['Namesss', 'Authorrrr', 'User Rating', 'Reviews', 'Price', 'Year', 'Genre']
+)
+df_books.columns
+JSON
+Podemos cargar el archivo JSON como un DataFrame por default, u otra forma de llevar la estructura JSON a una estructura de Pandas como una Series
+
+json_per_default = pd.read_json('./hpcharactersdataraw.json')
+# Me indexa una lista en raw del formato llave valor del JSON
+pd.read_json('./hpcharactersdataraw.json',typ='Series')
+Reto
+Sacar un dataset de Kaggle
+Cargar el DataFrame con la ruta del archivo
+# 
+genshin = pd.read_csv('./genshin.csv', sep=',', header=0)
+genshin
+genshin.info()
+
+--------------------------------------------------------------
