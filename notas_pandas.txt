@@ -69,3 +69,170 @@ genshin
 genshin.info()
 
 --------------------------------------------------------------
+
+Iloc y loc
+
+Permiten filtrar datos de manera mas específica. Loc filtra segun un label mientras que iloc lo hace mediante indices.
+
+Mostrar el dataFrame con loc
+import pandas as pd
+df_books = pd.read_csv('bestsellers-with-categories.csv', sep=',', header=0)
+df_books.loc[:] ----> #muestra todos los datos del dataFrame
+Mostrar un rango de filas tomando en cuenta el start y el end
+df_books.loc[0:4] ----> #muestra los datos de la fila 0 a la fila 4
+Filtrando por filas y columnas
+df_books.loc[0:4, ['Name', 'Author']] 
+----> #filtra los datos de la fila que va de 0 a 4 y de las columnas Name y Author
+Podemos modificar los valores de una columna especifica del dataFrame
+df_books.loc[:, ['Reviews']] * -1
+----> #multiplica por -1 todos los valores de la columna Reviews
+Filtrar datos que cumplan una condición determinada
+df_books.loc[:, ['Author']] == 'JJ Smith' 
+----> #muestra la columna Author con True en los valores que cumplen la condicion y False para los que no la cumplen
+Mostrar el dataFrame con iloc
+df_books.iloc[:] ---> #muestra todos los datos del dataframe
+Filtra datos segun los indices de las filas y las columnas
+df_books.iloc[:4, 0:2] ---> #muestra los datos de las filas que van de 0 a 3 y las columnas con indices 0 y 1
+Tambien podemos buscar un dato especifico con iloc
+df_books.iloc[1,3] ---> #muestra el dato alojado en la fila 1 columna 3
+
+----------------------------------------------------------------
+
+Agregar o eliminar datos de Pandas
+Mostrar las primeras 5 filas del dataFrame
+import pandas as pd
+import numpy as np
+
+df_books = pd.read_csv('bestsellers-with-categories.csv', sep=',', header=0)
+df_books.head() ---> #muestra las primeras 5 lineas del dataFrame
+Eliminar columnas de la salida pero no del dataFrame
+df_books.drop('Genre', axis=1).head() #axis 1 = columnas. axis 2 = filas
+----> #elimina la columna Genre de la salida pero no del dataFrame
+Eliminar una columna del dataFrame
+del df_books['Price'] 
+----> #elimina la columna Price del dataFrame
+Eliminar filas del dataFrame
+df_books.drop(0, axis=0)
+----> #elimina la fila 0 del dataFrame
+Eliminar un conjunto de filas mediante una lista
+df_books.drop([0,1,2], axis=0)
+----> #elimina las filas 0, 1 y 2 del dataFrame
+Elimina un conjunto de filas mediante un rango
+df_books.drop(range(0,10), axis=0)
+----> #elimina las primeras 10 filas del dataFrame
+Agregar una nueva columna con valores Nan
+df_books['Nueva_columna'] = np.nan
+----> #Crea una nueva columna con el nombre de Nueva_columna de valores Nan
+Mostrar el numero de filas(0) o columnas(1) que tiene un dataFrame
+df_books.shape[0]
+----> #Muestra el numero de filas que posee el dataFrame
+Agregar valores a una nueva columna del dataFrame
+#Creamos una array con un numero de valores igual al numero de filas del dataFrame
+data = np.arange(0, df_books.shape[0])
+
+#Creamos una nueva columna y agregamos los valores almacenados en el array
+df_books['Rango'] = data
+----> #Crea una nueva columna llamada Rango con los valores del array 
+Para añadir filas se utiliza la funcion append de python añadiendo como parametro una lista, diccionario o añadiendo los valores manualmente
+df_books.append(df_books)
+----> #Duplica las filas del dataFrame
+
+---------------------------------------------------------------
+
+Manejo de valores nulos
+
+Creamos un dataFrame con algunos valores nulos
+import pandas as pd
+import numpy as np
+
+dict = {'Col1':[1,2,3,np.nan],
+'Col2':[4, np.nan,6,7],
+'Col3':['a','b','c', None]}
+
+df = pd.DataFrame(dict)
+	----> Col1 Col2 Col3
+			0   1    4   a
+			1   2   nan  b
+			2   3    6   c
+			3  nan   7  None
+Identificar valores nulos en un dataFrame
+df.isnull()
+---->    Col1   Col2   Col3
+			0 false   false  false
+			1 false   true   false
+			2 false   false  false
+			3 true    false  true
+Identificar valores nulos con un valor numerico
+df.isnull()*1
+---->    Col1   Col2   Col3
+			0   0      0       0
+			1   0      1       0
+			2   0      0       0
+			3   1      0       1
+Sustituir los valores nulos por una cadena
+df.fillna('Missing')
+---->    Col1   Col2   Col3
+	    0  1.0    4.0     a
+			1  2.0  Missing   b
+			2  3.0    6.0     c
+			3 Missing 7.0  Missing		
+Sustituir valores nulos por una medida estadisticas realizada con los valores de las columnas
+df.fillna(df.mean())
+---->    Col1   Col2   Col3
+      0   1      4      a
+			1   2      5.667  b
+			2   3      6      c
+			3   2      7     None	    		
+Sustituir valores nulos por valores de interpolacion
+df.interpolate()
+---->    Col1   Col2   Col3
+      0   1      4      a
+			1   2      5      b
+			2   3      6      c
+			3   3      7     None	    		
+Eliminar valores nulos
+df.dropna()
+---->    Col1   Col2   Col3
+      0   1      4      a
+			2   3      6      c
+
+-------------------------------------------------------------------
+
+Filtrado por condiciones
+
+Llamamos los datos de un archivo csv para manejarlos
+
+import pandas as pd
+df_books = pd.read_csv('bestsellers-with-categories.csv', sep=',', header=0)
+df_books.head(2) ---> #muestra los primeros dos registros del dataFrame 
+Mostrar datos que sean mayores a cierto valor
+mayor2016 = df_books['Year'] > 2016
+mayor2016
+---> #muestra el dataFrame con valores booleanos. True para libros publicados desde el 2017
+Filtrar datos que sean mayores a cierto valor
+df_books[mayor2016]
+---> #filtra los datos que cumplen con la condicion
+Tambien se puede colocar la condicion directamente como parametro
+df_books[df_books['Year'] > 2016]
+---> #filtra los datos que cumplen con la condicion
+Mostrar los datos que sean igual a cierto valor
+genreFiction = df_books['Genre'] == 'Fiction'
+genreFiction ---> #muestra el dataFrame con valores booleanos. True para libros de tipo Fiction
+filtrado con varias condiciones
+df_books[genreFiction & mayor2016]
+---> #Filtra aquellos libros que sean de tipo Fiction y que hayan sido publicado desde 2017
+Filtrado con negacion
+df_books[~mayor2016]
+---> #Filtra aquellos libros publicado antes de 2017
+
+------------------------------------------------------------------------
+
+Funciones principales de Panadas
+
+✅ .head() → trae los primeros datos
+✅ .info() → Columnas, indices, cuales noson nulos, tipo de dato que maneja
+✅ .describe() → Solo de las columnas numericas me arroja datos estadisticos [ media,max,miun,mediana,etc ]
+✅ .memory_usage() → memoria utilizada
+✅ .value_counts() → cuenta valores de una columna
+✅ .drop_duplicates() → elimina los valores repetidos
+✅ .sort_values( columna para ordenar ) → Se puede ordenar de forma descendiente con la bandera ascending=False
