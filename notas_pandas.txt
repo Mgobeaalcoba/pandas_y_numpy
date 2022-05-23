@@ -236,3 +236,62 @@ Funciones principales de Panadas
 ✅ .value_counts() → cuenta valores de una columna
 ✅ .drop_duplicates() → elimina los valores repetidos
 ✅ .sort_values( columna para ordenar ) → Se puede ordenar de forma descendiente con la bandera ascending=False
+
+-------------------------------------------------------------------------
+
+Groupby
+
+Permite agrupar datos en funcion de los demas . Es decir, hacer el analisis del dataframe en funcion de una de las columnas.
+
+llamamos el dataFrame que vamos a manipular
+import pandas as pd
+df_books = pd.read_csv('bestsellers-with-categories.csv', sep=',', header=0)
+df_books.head(2) ---> #muestra las dos primeras lineas del dataFrame
+Agrupar por Author y mostrar el conteo de los datos de las demas columnas
+df_books.groupby('Author').count()
+--->              Name    User Rating    Reviews    Price    Year   Genre
+**Abraham Verghese    2         2             2         2       2       2
+Adam Gasiewski      1         1             1         1       1       1
+Adam Mansbach       1         1             1         1       1       1
+Adir Levy           1         1             1         1       1       1**
+Agrupar por Author y mostrar la media de los datos de las demas columnas
+df_books.groupby('Author').median()
+--->            User Rating    Reviews    Price    Year 
+**Abraham Verghese   4.6          4866       11      2010.5
+Adam Gasiewski     4.4          3113       6       2017
+Adam Mansbach      4.8          9568       9       2011
+Adir Levy          4.8          8170       13      2019**
+La columna Author, en los casos anteriores, pasa a ser el indice. Podemos usar loc y acceder a un dato especifico del dataFrame. Agrupar por autor y mostrar la suma de los valores de las demas columnas para William Davis
+df_books.groupby('Author').sum().loc['William Davis']
+---> 
+User Rating        8.8
+Reviews        14994.0
+Price             12.0
+Year            4025.0
+Name: William Davis, dtype: float64
+Abrupar por author y mostrar la suma de los valores de las demas columnas. Colocar los indices que el dataFrame trae por defecto
+df_books.groupby('Author').sum().reset_index()
+--->              Author    User Rating    Reviews    Price    Year 
+0         Abraham Verghese      9.2         9732       22      4021
+1         Adam Gasiewski        4.4         3113       6       2017
+2         Adam Mansbach         4.8         9568       9       2011
+3         Adir Levy             4.8         8170       13      2019
+La funcion agg() permite aplicar varias funciones al dataFrame una vez agrupado segun una columna especifica. Agrupar por Author y mostrar el minimo y maximo de las demas columnas
+df_books.groupby('Author').agg(['min','max'])
+---> #muestra cada columna dividida en dos: min y max. Estas contienen los valores maximo y minimo de la columna para cada Author 
+Agrupar por Author, obtener el minimo y maximo de la columna Reviews y sumar los valores de la columna User Rating
+df_books.groupby('Author').agg({'Reviews':['min','max'], 'User Rating':'sum'})
+--->                 Reviews min    Reviews max    User Rating 
+Abraham Verghese         4866           4866          9.2
+Adam Gasiewski           3113           3113          4.4
+Adam Mansbach            9568           9568          4.8
+Adir Levy                8170           8170          4.8
+Agrupar por Author - Year y contar los valores de las demas columnas
+df_books.groupby(['Author','Year']).count()
+--->                        Name    User Rating    Reviews    Price    Genre
+('Abraham Verghese', 2010)   1           1            1         1        1
+('Abraham Verghese', 2011)   1           1            1         1        1
+('Adam Gasiewski', 2017)     1           1            1         1        1
+('Adam Mansbach', 2011)      1           1            1         1        1
+
+--------------------------------------------------------------
